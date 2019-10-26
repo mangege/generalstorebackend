@@ -1,0 +1,88 @@
+taobao_material_ids:
+  - name: 普通
+    disabled: No
+    kinds:
+      - name: 好券直播
+        priority: 1
+        coupon: Yes
+        frequency: hour
+        ids:
+          综合: 3756
+          鞋包配饰: 3762
+          母婴: 3760
+          女装: 3767
+          美妆个护: 3763
+          食品: 3761
+          家居家装: 3758
+          男装: 3764
+          运动户外: 3766
+          数码家电: 3759
+          内衣: 3765
+      - name: 大额券
+        priority: 1
+        coupon: Yes
+        frequency: hour
+        ids:
+          综合:	9660
+          鞋包配饰:	9648
+          母婴:	9650
+          女装:	9658
+          美妆个护:	9653
+          食品: 9649
+          家居家装:	9655
+          男装:	9654
+          运动户外:	9651
+          数码家电:	9656
+          内衣:	9652
+      - name: 高佣榜
+        priority: 1
+        coupon: Yes
+        frequency: day
+        ids:
+          综合:	13366
+          鞋包配饰:	13370
+          母婴:	13374
+          女装:	13367
+          美妆个护:	13371
+          食品:	13375
+          家居家装:	13368
+          男装:	13372
+          运动户外:	13376
+          数码家电:	13369
+          内衣:	13373
+      - name: 品牌券
+        priority: 1
+        coupon: Yes
+        frequency: day
+        ids:
+          综合: 3786
+          鞋包配饰:	3796
+          母婴:	3789
+          女装: 3788
+          美妆个护:	3794
+          食品:	3791
+          家居家装: 3792
+          男装:	3790
+          运动户外: 3795
+          数码家电: 3793
+          内衣:	3787
+      - name: 有好货
+        priority: 1
+        coupon: Yes
+        frequency: day
+        ids:
+          综合: 4092
+      - name: 潮流范
+        priority: 1
+        coupon: Yes
+        frequency: day
+        ids:
+          综合: 4093
+      - name: 特惠
+        priority: 1
+        coupon: Yes
+        frequency: day
+        ids:
+          综合: 4094
+  - name: 双11预售
+    disabled: No

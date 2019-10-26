@@ -1,0 +1,34 @@
+taobao_categories:
+  - name: 综合
+    id: 10
+    position: 10
+  - name: 女装
+    id: 20
+    position: w0
+  - name: 食品
+    id: 30
+    position: 30
+  - name: 美妆个护
+    id: 40
+    position: 40
+  - name: 家居家装
+    id: 50
+    position: 50
+  - name: 数码家电
+    id: 60
+    position: 60
+  - name: 母婴
+    id: 70
+    position: 70
+  - name: 鞋包配饰
+    id: 80
+    position: 80
+  - name: 男装
+    id: 90
+    position: 90
+  - name: 内衣
+    id: 100
+    position: 100
+  - name: 运动户外
+    id: 110
+    position: 110
