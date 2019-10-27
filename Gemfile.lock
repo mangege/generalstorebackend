@@ -1,0 +1,17 @@
+GEM
+  remote: https://gems.ruby-china.com/
+  specs:
+    mysql2 (0.5.2)
+    rake (13.0.0)
+    sequel (5.25.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  mysql2
+  rake
+  sequel
+
+BUNDLED WITH
+   1.17.2
