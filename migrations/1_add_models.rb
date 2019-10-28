@@ -20,7 +20,6 @@ Sequel.migration do
       String :title
       Bignum :shop_id, unique: true
       Integer :kind # 0表示集市，1表示商城
-      TrueClass :flagship
       DateTime :created_at
       DateTime :updated_at
     end
@@ -48,10 +47,15 @@ Sequel.migration do
       BigDecimal :presale_deposit, size: [10, 2] # 预售定金
       BigDecimal :presale_discount_fee, size: [10, 2] # 预售优惠,不一定会有
       String :presale_discount_fee_text # 预售商品-优惠信息, 不一定有,没有的话则付定金没优惠, 付定金立减5元
+      DateTime :presale_start_time
+      DateTime :presale_end_time
+      DateTime :presale_tail_start_time
+      DateTime :presale_tail_end_time
 
       String :material_kind
       Integer :kind # 1 普通, 2 优惠券, 3 预售
-      Integer :step # 0 完成, 1 待抓取店铺, 2 待抓取口令
+      DateTime :fetch_shop_at
+      DateTime :fetch_word_at
       TrueClass :available
 
       DateTime :created_at

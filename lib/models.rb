@@ -2,9 +2,8 @@ require 'logger'
 require 'sequel'
 
 # TODO config file, fix max_connections
-DB_OPTIONS = {}
-#DB_OPTIONS = {logger: Logger.new(STDOUT)}
-DB = Sequel.connect('mysql2://localhost/generalstorespider?encoding=utf8mb4&user=root', DB_OPTIONS) 
+DB = Sequel.connect('mysql2://localhost/generalstorespider?encoding=utf8mb4&user=root') 
+# DB.loggers << Logger.new($stdout)
 Sequel::Model.plugin :timestamps
 
 
@@ -34,29 +33,38 @@ class TaobaoShop < Sequel::Model
   plugin :validation_helpers
   one_to_many :items, key: :shop_id, class: :TaobaoItem
 
-  def update_flagship
-    self.flagship = (kind == KINDS[:b] &&  title.end_with?('旗舰店'))
-  end
-
   def validate
     super
-    validates_presence [:title, :shop_id, :kind, :flagship]
+    validates_presence [:title, :shop_id, :kind]
     validates_unique :shop_id
   end
 end
 
 class TaobaoItem < Sequel::Model
   KINDS = {normal: 1, coupon: 2, presale: 3}
-  STEPS = {finished: 0, shop: 1, word: 2}
 
   plugin :validation_helpers
   many_to_one :shop, key: :shop_id, class: :TaobaoShop
   many_to_one :category, key: :category_id, class: :TaobaoCategory
 
+  def click_url_https
+    "https:#{click_url}"
+  end
+
+  def coupon_url_https
+    "https:#{coupon_url}"
+  end
+
+  def update_available
+    current_time = Time.now
+    self.available = !shop_id.nil? && !click_word.nil? && ((!coupon_start_time.nil? && coupon_start_time < current_time && coupon_end_time > current_time) || (!presale_start_time.nil? && presale_start_time < current_time && presale_end_time > current_time))
+  end
+
   def validate
     super
-    presence_attrs = [:title, :item_id, :category_id, :pict_url, :click_url, :kind, :material_kind, :step, :available]
-    validates_presence(presence_attrs.concat([:click_word, :shop_id])) if STEPS[:finished] == step
+    presence_attrs = [:title, :item_id, :category_id, :pict_url, :click_url, :kind, :material_kind, :available]
+    presence_attrs.concat([:click_word, :shop_id]) if available
+    validates_presence(presence_attrs)
     validates_unique :item_id
   end
 end

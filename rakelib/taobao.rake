@@ -6,6 +6,8 @@ class TaobaoMaterialTask
   def run
     load_id_data
     process_id_data
+    fetch_shop_info
+    fetch_item_word
   end
 
   private
@@ -21,6 +23,44 @@ class TaobaoMaterialTask
         material_obj['ids'].each do |material_id_arr|
           fetch_id_data(material_set, material_obj, material_id_arr)
         end
+      end
+    end
+  end
+
+  def fetch_shop_info
+    while true
+      items = TaobaoItem.where(fetch_shop_at: nil).limit(40)
+      break if items.empty?
+      num_iids = items.select_map(:item_id)
+      ret = TaobaoClinet.item_info(num_iids: num_iids.join(','))
+      ret['results']
+      items.each do |item|
+        item.fetch_shop_at = Time.now
+        result = ret['results'].find{|a| a['num_iid'] == item.item_id}
+        if result
+          shop = find_or_save_shop(result)
+          item.shop_id = shop&.id
+        end
+        item.save
+      end
+    end
+  end
+
+  def fetch_item_word
+    while true
+      items = TaobaoItem.where(fetch_word_at: nil).limit(1000)
+      break if items.empty?
+      items.each do |item|
+        item.fetch_word_at = Time.now
+        if item.click_url
+          ret = TaobaoClinet.word_create(text: item.title, url: item.click_url_https)
+          item.click_word = ret['data']['model']
+        end
+        if item.coupon_url
+          ret = TaobaoClinet.word_create(text: item.title, url: item.coupon_url_https)
+          item.coupon_word = ret['data']['model']
+        end
+        item.save
       end
     end
   end
@@ -51,32 +91,35 @@ class TaobaoMaterialTask
     shop = TaobaoShop.first(shop_id: result['seller_id'])
     return shop if shop
 
+    # optimus_material 接口有些返回的是卖家名称,而不是店铺名
     shop = TaobaoShop.new(shop_id: result['seller_id'], title: result['nick'], kind: result['user_type'])
-    shop.update_flagship
     shop.save
     shop
   end
 
   def find_or_save_item(material_set, material_obj, material_id_arr, shop, result)
+    return if result['coupon_amount'].to_i <= 0 && result['presale_deposit'].to_i <= 0 # 即无优惠券,又无预售的直接跳过
+
     item = TaobaoItem.first(item_id: result['item_id'])
-    # FIXME update api
-    if item
-      # puts "item exist #{item.item_id} #{material_set['name']}|#{material_obj['name']} - #{item.material_kind}"
-      return item
+    word_changed = false
+    if item.nil?
+      item = TaobaoItem.new(item_id: result['item_id']) 
+    elsif ((item.coupon_start_time.to_i * 1000) != result['coupon_start_time'].to_i || (item.presale_start_time.to_i * 1000) != result['presale_start_time'])
+      word_changed = true
     end
-    item = TaobaoItem.new(
+    item.set(
       title: result['title'],
-      item_id: result['item_id'],
       volume: result['volume'],
       pict_url: result['pict_url'],
       click_url: result['click_url'],
       orig_price: result['zk_final_price'],
     )
 
-    item.shop_id = shop&.id
-    item.category_id = @taobao_categories.find{|a| a.name == material_id_arr[0]}.id
-    item.kind = TaobaoItem::KINDS[:normal]
-    item.material_kind = "#{material_set['name']}|#{material_obj['name']}"
+    item.shop_id = shop&.id if item.shop_id.nil?
+    item.fetch_shop_at = Time.now if item.fetch_shop_at.nil? && item.shop_id
+    item.category_id = @taobao_categories.find{|a| a.name == material_id_arr[0]}.id if item.category_id.nil?
+    item.kind = TaobaoItem::KINDS[:normal] if item.kind.nil?
+    item.material_kind = "#{material_set['name']}|#{material_obj['name']}" if item.material_kind.nil?
 
     if result['coupon_amount'] && result['coupon_amount'].to_i > 0
       item.kind = TaobaoItem::KINDS[:coupon]
@@ -85,9 +128,19 @@ class TaobaoMaterialTask
         coupon_start_fee: result['coupon_start_fee'],
         coupon_total_count: result['coupon_total_count'],
         coupon_remain_count: result['coupon_remain_count'],
-        coupon_start_time: microsecond2time(result['coupon_start_time']),
-        coupon_end_time: microsecond2time(result['coupon_end_time']),
+        coupon_start_time: result['coupon_start_time'].nil? ? Date.today : microsecond2time(result['coupon_start_time']), # 当时间为空时,则认为优惠券只有当天有效
+        coupon_end_time: result['coupon_start_time'].nil? ? Date.today + 1 : microsecond2time(result['coupon_end_time']),
         coupon_url: result['coupon_share_url'],
+      )
+    else
+      item.set(
+        coupon_amount: nil,
+        coupon_start_fee: nil,
+        coupon_total_count: nil,
+        coupon_remain_count: nil,
+        coupon_start_time: nil,
+        coupon_end_time: nil,
+        coupon_url: nil
       )
     end
 
@@ -100,7 +153,21 @@ class TaobaoMaterialTask
       item.set(
         presale_deposit: result['presale_deposit'],
         presale_discount_fee_text: result['presale_discount_fee_text'],
-        presale_discount_fee: presale_discount_fee
+        presale_discount_fee: presale_discount_fee,
+        presale_start_time: microsecond2time(result['presale_start_time']),
+        presale_end_time: microsecond2time(result['presale_end_time']),
+        presale_tail_start_time: microsecond2time(result['presale_tail_start_time']),
+        presale_tail_end_time: microsecond2time(result['presale_end_time']),
+      )
+    else
+      item.set(
+        presale_deposit: nil,
+        presale_discount_fee_text: nil,
+        presale_discount_fee: nil,
+        presale_start_time: nil,
+        presale_end_time: nil,
+        presale_tail_start_time: nil,
+        presale_tail_end_time: nil,
       )
     end
 
@@ -108,13 +175,19 @@ class TaobaoMaterialTask
     item.price -= result['coupon_amount'].to_i if result['coupon_amount'].to_i > 0
     item.price -= presale_discount_fee if presale_discount_fee > 0
 
-    # TODO  step, word
+    if item.shop_id.nil?
+      item.fetch_shop_at = nil
+    elsif item.click_word.nil? || item.coupon_word.nil? || word_changed
+      item.fetch_word_at = nil
+    end
+    item.update_available
 
     item.save
     item
   end
 
   def microsecond2time(microsecond)
+    return if microsecond.to_i == 0
     Time.at(microsecond.to_i / 1000)
   end
 end

@@ -1,6 +1,7 @@
 GEM
   remote: https://gems.ruby-china.com/
   specs:
+    irb (1.0.0)
     mysql2 (0.5.2)
     rake (13.0.0)
     sequel (5.25.0)
@@ -9,6 +10,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  irb
   mysql2
   rake
   sequel

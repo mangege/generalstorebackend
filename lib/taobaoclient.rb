@@ -12,6 +12,16 @@ class TaobaoClinet
       execute(params)
     end
 
+    def item_info(params)
+      params[:method] = 'taobao.tbk.item.info.get'
+      execute(params)
+    end
+
+    def word_create(params)
+      params[:method] = 'taobao.tbk.tpwd.create'
+      execute(params)
+    end
+
     def execute(params)
       puts "execute params #{params.inspect}"
       params = process_params(params.dup)
