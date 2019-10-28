@@ -7,7 +7,6 @@ taobao_material_ids:
         coupon: Yes
         frequency: hour
         ids:
-          综合: 3756
           鞋包配饰: 3762
           母婴: 3760
           女装: 3767
@@ -18,12 +17,12 @@ taobao_material_ids:
           运动户外: 3766
           数码家电: 3759
           内衣: 3765
+          综合: 3756
       - name: 大额券
         priority: 1
         coupon: Yes
         frequency: hour
         ids:
-          综合:	9660
           鞋包配饰:	9648
           母婴:	9650
           女装:	9658
@@ -34,12 +33,12 @@ taobao_material_ids:
           运动户外:	9651
           数码家电:	9656
           内衣:	9652
+          综合:	9660
       - name: 高佣榜
         priority: 1
         coupon: Yes
         frequency: day
         ids:
-          综合:	13366
           鞋包配饰:	13370
           母婴:	13374
           女装:	13367
@@ -50,12 +49,12 @@ taobao_material_ids:
           运动户外:	13376
           数码家电:	13369
           内衣:	13373
+          综合:	13366
       - name: 品牌券
         priority: 1
         coupon: Yes
         frequency: day
         ids:
-          综合: 3786
           鞋包配饰:	3796
           母婴:	3789
           女装: 3788
@@ -66,6 +65,7 @@ taobao_material_ids:
           运动户外: 3795
           数码家电: 3793
           内衣:	3787
+          综合: 3786
       - name: 有好货
         priority: 1
         coupon: Yes
@@ -98,7 +98,6 @@ taobao_material_ids:
         coupon: Yes
         frequency: hour
         ids:
-          综合: 26200
           女装: 26512
           食品: 26516
           美妆个护: 26518
@@ -109,12 +108,12 @@ taobao_material_ids:
           男装: 26519
           内衣: 26520
           运动户外: 26521
+          综合: 26200
       - name: 大额券
         priority: 1
         coupon: Yes
         frequency: hour
         ids:
-          综合: 26203
           女装: 26563
           食品: 26567
           美妆个护: 26569
@@ -125,12 +124,12 @@ taobao_material_ids:
           男装: 26570
           内衣: 26571
           运动户外: 26572
+          综合: 26203
       - name: 行业尖货
         priority: 1
         coupon: Yes
         frequency: hour
         ids:
-          综合: 26481
           女装: 26595
           食品: 26599
           美妆个护: 26601
@@ -141,12 +140,12 @@ taobao_material_ids:
           男装: 26602
           内衣: 26603
           运动户外: 26604
+          综合: 26481
       - name: 超级大牌
         priority: 1
         coupon: Yes
         frequency: hour
         ids:
-          综合: 26483
           女装: 26628
           食品: 26632
           美妆个护: 26634
@@ -157,3 +156,4 @@ taobao_material_ids:
           男装: 26635
           内衣: 26636
           运动户外: 26637
+          综合: 26483
