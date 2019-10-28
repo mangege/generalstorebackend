@@ -41,6 +41,7 @@ class TaobaoMaterialTask
           shop = find_or_save_shop(result)
           item.shop_id = shop&.id
         end
+        item.update_available
         item.save
       end
     end
@@ -48,7 +49,7 @@ class TaobaoMaterialTask
 
   def fetch_item_word
     while true
-      items = TaobaoItem.where(fetch_word_at: nil).limit(1000)
+      items = TaobaoItem.where(fetch_word_at: nil).reverse(:volume).limit(1000)
       break if items.empty?
       items.each do |item|
         item.fetch_word_at = Time.now
@@ -60,6 +61,7 @@ class TaobaoMaterialTask
           ret = TaobaoClinet.word_create(text: item.title, url: item.coupon_url_https)
           item.coupon_word = ret['data']['model']
         end
+        item.update_available
         item.save
       end
     end
