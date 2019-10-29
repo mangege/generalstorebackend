@@ -1,10 +1,11 @@
 require 'net/http'
 require "digest/md5"
 require 'json'
+require './lib/app_config'
 
 class TaobaoClinet
-  APP_KEY = '28072206'
-  APP_SECRET = '913600a3c0e71277544d675354b28f9b'
+  APP_KEY = AppConfig.taobaoke.app_key
+  APP_SECRET = AppConfig.taobaoke.app_secret
 
   class << self
     def optimus_material(params)

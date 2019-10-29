@@ -1,8 +1,8 @@
 require 'logger'
 require 'sequel'
+require './lib/app_config'
 
-# TODO config file, fix max_connections
-DB = Sequel.connect('mysql2://localhost/generalstorespider?encoding=utf8mb4&user=root') 
+DB = Sequel.connect(AppConfig.database.to_h) 
 # DB.loggers << Logger.new($stdout)
 Sequel::Model.plugin :timestamps
 

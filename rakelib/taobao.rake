@@ -1,4 +1,5 @@
 require 'yaml'
+require './lib/app_config'
 require './lib/taobaoclient'
 require './lib/models'
 
@@ -68,7 +69,7 @@ class TaobaoMaterialTask
   end
 
   def fetch_id_data(material_set, material_obj, material_id_arr)
-    params = {adzone_id: 109639900014, material_id: material_id_arr[1], page_size: 100, page_no: 1}
+    params = {adzone_id: AppConfig.taobaoke.adzone_id, material_id: material_id_arr[1], page_size: 100, page_no: 1}
     while true
       ret = TaobaoClinet.optimus_material(params)
       break if TaobaoClinet.empty_result?(ret)
