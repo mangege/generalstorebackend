@@ -47,6 +47,14 @@ class TaobaoItem < Sequel::Model
   many_to_one :shop, key: :shop_id, class: :TaobaoShop
   many_to_one :category, key: :category_id, class: :TaobaoCategory
 
+  def referral_url
+    coupon_url || click_url
+  end
+
+  def referral_word
+    coupon_word || click_word
+  end
+
   def click_url_https
     "https:#{click_url}"
   end
