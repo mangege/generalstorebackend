@@ -1,4 +1,5 @@
 require 'logger'
+require 'securerandom'
 require 'sequel'
 require './lib/app_config'
 
@@ -14,6 +15,12 @@ class User < Sequel::Model
     super
     validates_presence :uuid
     validates_unique :uuid
+  end
+
+  def self.gen
+    user = User.new
+    user.uuid = SecureRandom.uuid
+    user
   end
 end
 
