@@ -51,7 +51,7 @@ class WebApp < Sinatra::Application
       items = []
       item_ids = params['item_ids'].to_s.split(',')
       items = TaobaoItem.exclude(id: item_ids).where(available: true).order(Sequel.desc(:volume)).limit(24)
-      if params['material_kind']
+      if params['material_kind'] && params['material_kind'] != ''
         items = items.where(material_kind: params['material_kind'])
       end
       unless user.nil?

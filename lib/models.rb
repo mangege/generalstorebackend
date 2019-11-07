@@ -99,7 +99,7 @@ class UserTaobaoItem < Sequel::Model
     item_ids = item_ids.collect(&:to_i)
     exist_item_ids = self.where(user_id: user_id, taobao_item_id: item_ids).select_map(:taobao_item_id)
     (item_ids - exist_item_ids).each do |item_id|
-      self.new(user_id: user_id, taobao_item_id: item_id).save
+      self.new(user_id: user_id, taobao_item_id: item_id).save rescue nil # Sequel::UniqueConstraintViolation
     end
   end
 end
