@@ -69,13 +69,16 @@ class TaobaoMaterialTask
   end
 
   def fetch_id_data(material_set, material_obj, material_id_arr)
-    params = {adzone_id: AppConfig.taobaoke.adzone_id, material_id: material_id_arr[1], page_size: 100, page_no: 1}
-    while true
-      ret = TaobaoClinet.optimus_material(params)
-      break if TaobaoClinet.empty_result?(ret)
-      save_id_data(material_set, material_obj, material_id_arr, ret)
-      break if ret['result_list'].length < params[:page_size]
-      params[:page_no] += 1
+    material_ids = material_id_arr[1].is_a?(Array) ? material_id_arr[1] : [material_id_arr[1]]
+    material_ids.each do |material_id|
+      params = {adzone_id: AppConfig.taobaoke.adzone_id, material_id: material_id, page_size: 100, page_no: 1}
+      while true
+        ret = TaobaoClinet.optimus_material(params)
+        break if TaobaoClinet.empty_result?(ret)
+        save_id_data(material_set, material_obj, [material_id_arr[0], material_id], ret)
+        break if ret['result_list'].length < params[:page_size]
+        params[:page_no] += 1
+      end
     end
   end
 

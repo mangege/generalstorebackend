@@ -1,6 +1,6 @@
 taobao_material_ids:
   - name: 普通
-    disabled: No
+    disabled: Yes
     kinds:
       - name: 好券直播
         priority: 1
@@ -85,7 +85,7 @@ taobao_material_ids:
         ids:
           综合: 4094
   - name: 双11预售
-    disabled: No
+    disabled: Yes
     kinds:
       - name: 热推
         priority: 1
@@ -157,3 +157,47 @@ taobao_material_ids:
           内衣: 26636
           运动户外: 26637
           综合: 26483
+  - name: 双11非预售
+    disabled: No
+    kinds:
+      - name: 大额券
+        priority: 1
+        coupon: Yes
+        frequency: hour
+        ids:
+          综合: 27446
+          女装: 27448
+          食品: 27451
+          美妆个护: 27453
+          家居家装: 27798
+          母婴: 27454
+      - name: 天猫国际
+        priority: 1
+        coupon: Yes
+        frequency: hour
+        ids:
+          综合: [27540, 27541]
+      - name: 超级大牌
+        priority: 1
+        coupon: Yes
+        frequency: hour
+        ids:
+          综合: [27768, 27757, 27685, 27686, 27687]
+      - name: 行业尖货
+        priority: 1
+        coupon: Yes
+        frequency: hour
+        ids:
+          综合: [27773, 27690, 27689, 27688]
+      - name: 聚划算热销
+        priority: 1
+        coupon: Yes
+        frequency: hour
+        ids:
+          综合: [27812, 27814, 27813]
+      - name: 工厂直供
+        priority: 1
+        coupon: Yes
+        frequency: hour
+        ids:
+          综合: [27807]
