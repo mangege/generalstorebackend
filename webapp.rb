@@ -50,7 +50,10 @@ class WebApp < Sinatra::Application
       user = current_user
       items = []
       item_ids = params['item_ids'].to_s.split(',')
-      items = TaobaoItem.exclude(id: item_ids).order(Sequel.desc(:volume)).limit(24)
+      items = TaobaoItem.exclude(id: item_ids).where(available: true).order(Sequel.desc(:volume)).limit(24)
+      if params['material_kind']
+        items = items.where(material_kind: params['material_kind'])
+      end
       unless user.nil?
         UserTaobaoItem.add_read(user.id, item_ids)
         items = items.left_outer_join(:user_taobao_items, taobao_item_id: :id, user_id: user.id).where(user_id: nil)
