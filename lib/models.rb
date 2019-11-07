@@ -83,3 +83,25 @@ class TaobaoItem < Sequel::Model
     validates_unique :item_id
   end
 end
+
+class UserTaobaoItem < Sequel::Model
+  plugin :validation_helpers
+
+  def validate
+    super
+    validates_presence [:user_id, :taobao_item_id]
+    validates_unique [:user_id, :taobao_item_id]
+  end
+
+  def self.add_read(user_id, item_ids)
+    return if user_id.nil? || item_ids.nil? || item_ids.empty?
+
+    item_ids = item_ids.collect(&:to_i)
+    exist_item_ids = self.where(user_id: user_id, taobao_item_id: item_ids).select_map(:taobao_item_id)
+    (item_ids - exist_item_ids).each do |item_id|
+      self.new(user_id: user_id, taobao_item_id: item_id).save
+    end
+  end
+end
+
+UserTaobaoItem.unrestrict_primary_key

@@ -47,8 +47,23 @@ class WebApp < Sinatra::Application
     end
 
     get '/items' do
-      items = TaobaoItem.exclude(id: params['ids'].to_s.split(',')).order(Sequel.desc(:volume)).limit(24)
+      user = current_user
+      items = []
+      item_ids = params['item_ids'].to_s.split(',')
+      items = TaobaoItem.exclude(id: item_ids).order(Sequel.desc(:volume)).limit(24)
+      unless user.nil?
+        UserTaobaoItem.add_read(user.id, item_ids)
+        items = items.left_outer_join(:user_taobao_items, taobao_item_id: :id, user_id: user.id).where(user_id: nil)
+      end
+      # puts items.sql
       TaobaoItemSerializer.new(items, is_collection: true).serialized_json
+    end
+
+    private
+    # TODO action cache
+    def current_user
+      uuid = request.env['HTTP_X_TOKEN'] || params['token']
+      User.first(uuid: uuid)
     end
   end
 end
