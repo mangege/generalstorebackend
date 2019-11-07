@@ -7,6 +7,7 @@ gem 'rake'
 
 gem 'sinatra'
 gem 'sinatra-contrib'
+gem 'rack-contrib'
 gem 'fast_jsonapi'
 gem 'puma'
 

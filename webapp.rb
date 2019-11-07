@@ -31,23 +31,22 @@ class WebApp < Sinatra::Application
     end
 
     post '/login' do
-      uuid = params[:uuid]
+      uuid = params['uuid']
       if uuid.nil? || uuid.size != 36
         status 422
-        return {ok: false, msg: 'uuid invalid'}.to_json
+        return {ok: false, msg: '登录口令无效'}.to_json
       end
 
       user = User.first(uuid: uuid)
       if user.nil?
         status 422
-        return {ok: false, msg: 'uuid not found'}.to_json
+        return {ok: false, msg: '登录失败'}.to_json
       end
 
       InsecureUserSerializer.new(user).serialized_json
     end
 
     get '/items' do
-      sleep 1
       items = TaobaoItem.exclude(id: params['ids'].to_s.split(',')).order(Sequel.desc(:volume)).limit(24)
       TaobaoItemSerializer.new(items, is_collection: true).serialized_json
     end
