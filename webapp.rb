@@ -48,15 +48,18 @@ class WebApp < Sinatra::Application
 
     get '/items' do
       user = current_user
+
       items = []
       item_ids = params['item_ids'].to_s.split(',')
-      items = TaobaoItem.exclude(id: item_ids).where(available: true).order(Sequel.desc(:volume)).limit(24)
-      if params['material_kind'] && params['material_kind'] != ''
-        items = items.where(material_kind: params['material_kind'])
-      end
-      unless user.nil?
+      items = TaobaoItem.where(available: true).order(Sequel.desc(:volume)).limit(24)
+      items = items.where(material_kind: params['material_kind']) if params['material_kind'] && params['material_kind'] != ''
+      if user.nil?
+        items = items.offset(params['offset'] || 0)
+      else
         UserTaobaoItem.add_read(user.id, item_ids)
-        items = items.left_outer_join(:user_taobao_items, taobao_item_id: :id, user_id: user.id).where(user_id: nil)
+        # 有使用 qualify , taobao_items 表的过滤条件请写在此行上面
+        items = items.exclude(id: item_ids).qualify(:taobao_items)
+        items = items.left_outer_join(:user_taobao_items, taobao_item_id: :id, user_id: user.id).where(user_id: nil).qualify(:user_taobao_items)
       end
       # puts items.sql
       TaobaoItemSerializer.new(items, is_collection: true).serialized_json
