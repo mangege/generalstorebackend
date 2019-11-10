@@ -35,6 +35,10 @@ class TaobaoClinet
       ret.dig('error_response', 'sub_code') == '50001'
     end
 
+    def error_result?(ret)
+      !ret['error_response'].nil?
+    end
+
     def process_params(params)
       params.delete(:sign)
 

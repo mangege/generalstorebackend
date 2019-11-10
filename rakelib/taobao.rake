@@ -34,7 +34,10 @@ class TaobaoMaterialTask
       break if items.empty?
       num_iids = items.select_map(:item_id)
       ret = TaobaoClinet.item_info(num_iids: num_iids.join(','))
-      ret['results']
+      if TaobaoClinet.error_result?(ret)
+        puts ret.inspect
+        next
+      end
       items.each do |item|
         item.fetch_shop_at = Time.now
         result = ret['results'].find{|a| a['num_iid'] == item.item_id}
@@ -56,11 +59,19 @@ class TaobaoMaterialTask
         item.fetch_word_at = Time.now
         if item.click_url
           ret = TaobaoClinet.word_create(text: item.title, url: item.click_url_https)
-          item.click_word = ret['data']['model']
+          if TaobaoClinet.error_result?(ret)
+            puts ret.inspect
+          else
+            item.click_word = ret['data']['model']
+          end
         end
         if item.coupon_url
           ret = TaobaoClinet.word_create(text: item.title, url: item.coupon_url_https)
-          item.coupon_word = ret['data']['model']
+          if TaobaoClinet.error_result?(ret)
+            puts ret.inspect
+          else
+            item.coupon_word = ret['data']['model']
+          end
         end
         item.update_available
         item.save
@@ -75,6 +86,10 @@ class TaobaoMaterialTask
       while true
         ret = TaobaoClinet.optimus_material(params)
         break if TaobaoClinet.empty_result?(ret)
+        if TaobaoClinet.error_result?(ret)
+          puts ret.inspect
+          break
+        end
         save_id_data(material_set, material_obj, [material_id_arr[0], material_id], ret)
         break if ret['result_list'].length < params[:page_size]
         params[:page_no] += 1
