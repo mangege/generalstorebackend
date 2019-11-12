@@ -54,12 +54,19 @@ class TaobaoItem < Sequel::Model
   many_to_one :shop, key: :shop_id, class: :TaobaoShop
   many_to_one :category, key: :category_id, class: :TaobaoCategory
 
+  def coupon_available?
+    current_time = Time.now
+    !coupon_start_time.nil? && coupon_start_time < current_time && coupon_end_time > current_time
+  end
+
   def referral_url
-    coupon_url || click_url
+    return coupon_url if coupon_word && coupon_available?
+    click_url
   end
 
   def referral_word
-    coupon_word || click_word
+    return coupon_word if coupon_word && coupon_available?
+    click_word
   end
 
   def click_url_https
