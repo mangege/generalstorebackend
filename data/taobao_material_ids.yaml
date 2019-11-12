@@ -1,6 +1,6 @@
 taobao_material_ids:
   - name: 普通
-    disabled: Yes
+    disabled: No
     kinds:
       - name: 好券直播
         priority: 1
@@ -158,7 +158,7 @@ taobao_material_ids:
           运动户外: 26637
           综合: 26483
   - name: 双11非预售
-    disabled: No
+    disabled: Yes
     kinds:
       - name: 大额券
         priority: 1
