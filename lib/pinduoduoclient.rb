@@ -13,16 +13,22 @@ class PinduoduoClinet
       execute(params)
     end
 
+    def top_goods(params)
+      params[:type] = 'pdd.ddk.top.goods.list.query'
+      execute(params)
+    end
+
+    def url_generate(params)
+      params[:type] = 'pdd.ddk.goods.promotion.url.generate'
+      execute(params)
+    end
+
     def execute(params)
       puts "execute params #{params.inspect}"
       params = process_params(params.dup)
       uri = URI('https://gw-api.pinduoduo.com/api/router')
       res = Net::HTTP.post_form(uri, params)
       JSON.parse(res.body)
-    end
-
-    def empty_result?(ret)
-      ret.dig('error_response', 'sub_code') == '50001'
     end
 
     def error_result?(ret)

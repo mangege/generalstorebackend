@@ -107,3 +107,54 @@ class UserTaobaoItem < Sequel::Model
 end
 
 UserTaobaoItem.unrestrict_primary_key
+
+class PinduoduoShop
+  plugin :validation_helpers
+  one_to_many :items, key: :shop_id, class: :PinduoduoItem
+
+  def validate
+    super
+    validates_presence [:title, :shop_id, :kind]
+    validates_unique :shop_id
+  end
+end
+
+class PinduoduoItem < Sequel::Model
+  plugin :validation_helpers
+  many_to_one :shop, key: :shop_id, class: :PinduoduoShop
+
+  def coupon_available?
+    current_time = Time.now
+    !coupon_start_time.nil? && coupon_start_time < current_time && coupon_end_time > current_time
+  end
+
+  def update_available
+    current_time = Time.now
+    self.available = !shop_id.nil? && !click_url.nil? && (!coupon_start_time.nil? && coupon_start_time < current_time && coupon_end_time > current_time)
+  end
+
+  def validate
+    super
+    presence_attrs = [:title, :item_id, :pict_url, :available]
+    presence_attrs.concat([:click_url, :shop_id]) if available
+    validates_presence(presence_attrs)
+    validates_unique :item_id
+  end
+end
+
+class UserPinduoduoItem < Sequel::Model
+  plugin :validation_helpers
+
+  def validate
+    super
+    validates_presence [:user_id, :pinduouo_item_id]
+    validates_unique [:user_id, :pinduouo_item_id]
+  end
+
+  def self.add_read(user_id, item_ids)
+    return if user_id.nil? || item_ids.nil? || item_ids.empty?
+    self.dataset.insert_ignore.multi_insert(item_ids.collect{|item_id| {user_id: user_id, pinduouo_item_id: item_id}})
+  end
+end
+
+UserPinduoduoItem.unrestrict_primary_key

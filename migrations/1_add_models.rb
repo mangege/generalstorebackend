@@ -30,8 +30,8 @@ Sequel.migration do
       Bignum :item_id, unique: true
       Bignum :category_id
       Bignum :shop_id
-      BigDecimal :coupon_amount, size: [10, 2] # 70, 为0则表示没有优惠券
-      BigDecimal :coupon_start_fee, size: [10, 2] # 212.00
+      BigDecimal :coupon_amount, size: [10, 2] # 优惠券面额，单位为分, 为0则表示没有优惠券
+      BigDecimal :coupon_start_fee, size: [10, 2] # 优惠券门槛金额，单位为分
       BigDecimal :price, size: [10, 2] # 最终价
       BigDecimal :orig_price, size: [10, 2] # 原价
       Integer :coupon_total_count # 优惠券总量
