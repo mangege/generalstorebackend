@@ -13,3 +13,8 @@ taobaoke:
   app_key: 28072206
   app_secret: 913600a3c0e71277544d675354b28f9b
   adzone_id: 109639900014
+
+duoduoke:
+  client_id: client_id
+  client_secret: client_secret
+  p_id: p_id
