@@ -5,6 +5,7 @@ require './lib/models'
 
 class TaobaoMaterialTask
   def run
+    clean_items
     load_id_data
     process_id_data
     fetch_shop_info
@@ -12,6 +13,21 @@ class TaobaoMaterialTask
   end
 
   private
+  def clean_items
+    last_id = 0
+    while True
+      items = TaobaoItem.where(available: true).where{ id > last_id }.limit(100)
+      break if items.empty?
+      DB.transaction do
+        items.each do |item|
+          last_id = item.id
+          item.update_available
+          item.save
+        end
+      end
+    end
+  end
+
   def load_id_data
     @id_data = Psych.load_file("./data/taobao_material_ids.yaml")
     @taobao_categories = TaobaoCategory.all
