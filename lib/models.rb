@@ -108,7 +108,7 @@ end
 
 UserTaobaoItem.unrestrict_primary_key
 
-class PinduoduoShop
+class PinduoduoShop < Sequel::Model
   plugin :validation_helpers
   one_to_many :items, key: :shop_id, class: :PinduoduoItem
 

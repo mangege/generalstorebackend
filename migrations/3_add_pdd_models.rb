@@ -28,6 +28,7 @@ Sequel.migration do
       String :wechat_url, size: 1024 # page_path
       String :qq_url, size: 1024 # page_path
 
+      String :material_kind
       DateTime :fetch_shop_at
       DateTime :fetch_url_at
       TrueClass :available

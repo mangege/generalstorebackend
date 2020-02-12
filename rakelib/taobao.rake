@@ -15,7 +15,7 @@ class TaobaoMaterialTask
   private
   def clean_items
     last_id = 0
-    while True
+    while true
       items = TaobaoItem.where(available: true).where{ id > last_id }.limit(100)
       break if items.empty?
       DB.transaction do
