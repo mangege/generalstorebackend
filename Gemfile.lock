@@ -19,7 +19,7 @@ GEM
     mustermann (1.0.3)
     mysql2 (0.5.2)
     nio4r (2.5.2)
-    puma (4.2.1)
+    puma (4.3.3)
       nio4r (~> 2.0)
     rack (2.0.7)
     rack-contrib (2.1.0)
